@@ -19,7 +19,9 @@ jobs:
           python-version: 3.9
 
       - name: Install 
-        run: pip install -e .[all]
+        run: |
+          pip install git+https://github.com/ebisu-flashcards/flashcards-core.git
+          pip install -e .[all]
 
       - name: Unit tests
         run: coverage run --source=flashcards_cli -m pytest 
