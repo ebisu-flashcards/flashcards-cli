@@ -1,0 +1,34 @@
+name: Unit Tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Python 3.9
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+
+      - name: Install 
+        run: pip install -e .[all]
+
+      - name: Unit tests
+        run: coverage run --source=flashcards_cli -m pytest 
+
+      - name: Coveralls.io
+        run: |
+          coveralls
+          coveralls --finish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_PARALLEL: true
+          COVERALLS_SERVICE_NAME: 'github'
