@@ -20,6 +20,7 @@ REQUIREMENTS: dict = {
         "prompt_toolkit",
         "click",
         "fuzzyfinder",
+        "sqlalchemy"   # FIXME Here for typing only... is it worth it?
     ],
     "test": [
         "pytest",
@@ -64,4 +65,9 @@ setup(
         # The 'all' extra is the union of all requirements.
         "all": [req for reqs in REQUIREMENTS.values() for req in reqs],
     },
+    entry_points={
+        'console_scripts': {
+            "flashcards=flashcards_cli.main:main"
+        }
+    }
 )
