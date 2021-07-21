@@ -20,7 +20,7 @@ jobs:
 
       - name: Install 
         run: |
-          pip install git+https://github.com/ebisu-flashcards/flashcards-core.git
+          pip install -e git+https://github.com/ebisu-flashcards/flashcards-core.git
           pip install -e .[all]
 
       - name: Unit tests
