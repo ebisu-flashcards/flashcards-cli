@@ -54,6 +54,8 @@ def study(db: Session):
             return
 
         if answer["answer"] == card.answer.value:
+            scheduler.process_test_result(card, True)
             click.echo(" ** Correct! **")
         else:
+            scheduler.process_test_result(card, False)
             click.echo(f" __ Wrong! The answer was {card.answer.value} __")
