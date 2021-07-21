@@ -25,7 +25,10 @@ def edit_cards(db: Session, deck: Deck):
                     "name": "card",
                     "message": "Select the card you want to edit:",
                     "choices": ["< Back", "+ New Card"]
-                    + [f"{c.id}: {c.question.value} | {c.answer.value}" for c in deck.cards]
+                    + [
+                        f"{c.id}: {c.question.value} | {c.answer.value}"
+                        for c in deck.cards
+                    ],
                 }
             ]
         )
@@ -96,12 +99,7 @@ def create_card(db: Session, deck: Deck) -> None:
 
     question = Fact.create(db=db, value=answers["question"], format="plaintext")
     answer = Fact.create(db=db, value=answers["answer"], format="plaintext")
-    card = Card.create(
-        db=db,
-        deck_id=deck.id,
-        question_id=question.id,
-        answer_id=answer.id
-    )
+    Card.create(db=db, deck_id=deck.id, question_id=question.id, answer_id=answer.id)
     click.echo("New card created!")
 
 
@@ -116,21 +114,32 @@ def update_card(db: Session, card: Card) -> Optional[Card]:
     """
     answers = prompt(
         [
-            {"type": "input", "name": "question", "message": "Question:", "default": card.question.value},
-            {"type": "input", "name": "answer", "message": "Answer:", "default": card.answer.value},
+            {
+                "type": "input",
+                "name": "question",
+                "message": "Question:",
+                "default": card.question.value,
+            },
+            {
+                "type": "input",
+                "name": "answer",
+                "message": "Answer:",
+                "default": card.answer.value,
+            },
         ]
     )
 
     # This happens in case of a Ctrl+C during the above questions
-    if (
-        not answers.get("question")
-        or not answers.get("answer")
-    ):
+    if not answers.get("question") or not answers.get("answer"):
         click.echo("Card update stopped.")
         return
 
-    question = Fact.update(db=db, object_id=card.question.id, value=answers["question"], format="plaintext")
-    answer = Fact.update(db=db, object_id=card.answer.id, value=answers["answer"], format="plaintext")
+    Fact.update(
+        db=db, object_id=card.question.id, value=answers["question"], format="plaintext"
+    )
+    Fact.update(
+        db=db, object_id=card.answer.id, value=answers["answer"], format="plaintext"
+    )
 
     click.echo("Card updated!")
     return card
@@ -158,4 +167,3 @@ def delete_card(db: Session, card: Card) -> None:
         click.echo("Card deleted!")
     else:
         click.echo("The card was NOT deleted.")
-

@@ -24,7 +24,7 @@ def edit_decks(db: Session):
                 "name": "deck",
                 "message": "Which deck do you want to edit?",
                 "choices": [d.name for d in Deck.get_all(db=db)]
-                + ["+ Create new deck", "< Back"]
+                + ["+ Create new deck", "< Back"],
             }
         ]
     )
@@ -104,7 +104,7 @@ def create_deck(db: Session) -> Optional[Deck]:
     # This happens in case of a Ctrl+C during the above questions
     if (
         not answers.get("name")
-        or not not answers.get("desc")
+        or not answers.get("desc")
         or not answers.get("algorithm")
     ):
         click.echo("Deck creation stopped: no deck was created.")

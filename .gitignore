@@ -2,6 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
 
 sql_app.db
+.vscode/*
 
 ### Python ###
 # Byte-compiled / optimized / DLL files

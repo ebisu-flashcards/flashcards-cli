@@ -14,9 +14,9 @@ def main():
     through a flashcards-core's SessionLocal() call.
     """
     db = SessionLocal()
-    click.echo("****************************")
+    click.echo("\n****************************")
     click.echo(" Welcome to Flashcards CLI! ")
-    click.echo("****************************")
+    click.echo("****************************\n")
     while True:
         answers = prompt(
             [
