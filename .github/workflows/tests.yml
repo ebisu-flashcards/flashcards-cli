@@ -20,11 +20,11 @@ jobs:
 
       - name: Install 
         run: |
-          pip install git+https://github.com/ebisu-flashcards/flashcards-core.git#egg=flashcards_core
+          pip install -e git+https://github.com/ebisu-flashcards/flashcards-core.git#egg=flashcards_core
           pip install -e .[all]
 
       - name: Unit tests
-        run: coverage run --source=flashcards_cli -m pytest 
+        run: coverage run --source=flashcards_cli -m pytest flashcards-cli/tests
 
       - name: Coveralls.io
         run: |
