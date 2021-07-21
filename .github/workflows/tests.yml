@@ -24,7 +24,7 @@ jobs:
           pip install -e .[all]
 
       - name: Unit tests
-        run: coverage run --source=flashcards_cli -m pytest flashcards-cli/tests
+        run: coverage run --source=flashcards_cli -m pytest tests/
 
       - name: Coveralls.io
         run: |
