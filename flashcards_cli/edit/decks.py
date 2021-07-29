@@ -3,9 +3,7 @@ from typing import Optional
 import click
 from PyInquirer import prompt
 from sqlalchemy.orm import Session
-
 from flashcards_core.database import Deck
-from flashcards_core.schedulers import get_available_schedulers
 
 from flashcards_cli.edit.cards import edit_cards
 
@@ -78,7 +76,7 @@ def edit_decks(session: Session):
 def create_deck(session: Session) -> Optional[Deck]:
     """
     Created a new deck with the information gathered,
-    and gives some feesessionack to the user.
+    and gives some feedback to the user.
 
     :param session: a SQLAlchemy Session object
     """
@@ -86,27 +84,11 @@ def create_deck(session: Session) -> Optional[Deck]:
         [
             {"type": "input", "name": "name", "message": "Deck Name:"},
             {"type": "input", "name": "desc", "message": "Deck Description:"},
-            {
-                "type": "list",
-                "name": "algorithm",
-                "message": "Which SRS algorithm you want to use for studying?",
-                "choices": get_available_schedulers(),
-            },
-            {
-                "type": "input",
-                "name": "params",
-                "message": "Any extra parameters (JSON format)?",
-                "default": "{}",
-            },
         ]
     )
 
     # This happens in case of a Ctrl+C during the above questions
-    if (
-        not answers.get("name")
-        or not answers.get("desc")
-        or not answers.get("algorithm")
-    ):
+    if not answers.get("name") or not answers.get("desc"):
         click.echo("Deck creation stopped: no deck was created.")
         return
 
@@ -114,9 +96,7 @@ def create_deck(session: Session) -> Optional[Deck]:
         session=session,
         name=answers["name"],
         description=answers["desc"],
-        algorithm=answers["algorithm"],
-        parameters=answers["params"] or "{}",
-        state=None,
+        algorithm="random",
     )
     click.echo("New deck created!")
     return deck
@@ -144,28 +124,11 @@ def update_deck(session: Session, deck: Deck) -> Optional[Deck]:
                 "message": "Deck Description:",
                 "default": deck.description,
             },
-            {
-                "type": "list",
-                "name": "algorithm",
-                "message": "Which SRS algorithm you want to use for studying?",
-                "choices": get_available_schedulers(),
-                "default": deck.algorithm,
-            },
-            {
-                "type": "input",
-                "name": "params",
-                "message": "Any extra parameters (JSON format)?",
-                "default": deck.parameters,
-            },
         ]
     )
 
     # This happens in case of a Ctrl+C during the above questions
-    if (
-        not answers.get("name")
-        or not not answers.get("desc")
-        or not answers.get("algorithm")
-    ):
+    if not answers.get("name") or not not answers.get("desc"):
         click.echo("Deck update stopped.")
         return
 
@@ -174,9 +137,6 @@ def update_deck(session: Session, deck: Deck) -> Optional[Deck]:
         object_id=deck.id,
         name=answers["name"],
         description=answers["description"],
-        algorithm=answers["algorithm"],
-        parameters=answers["params"] or "{}",
-        state=None,
     )
     click.echo("Deck updated!")
     return deck
@@ -194,8 +154,7 @@ def delete_deck(session: Session, deck: Deck) -> None:
             {
                 "type": "confirm",
                 "name": "confirm",
-                "message": f"Are you really sure you want to delete '{deck.name}'? "
-                "Its cards won't be deleted.",
+                "message": f"Are you really sure you want to delete '{deck.name}'?",
                 "default": False,
             }
         ]

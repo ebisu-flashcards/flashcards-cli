@@ -1,5 +1,6 @@
 import sys
 import click
+from time import sleep
 from PyInquirer import prompt
 
 from flashcards_core.database import init_db
@@ -11,7 +12,7 @@ from flashcards_cli.edit import edit
 def main():
     """
     Main CLI menu. Creates the initial DB connection
-    through a flashcards-core's SessionLocal() call.
+    through a flashcards-core's init_db() call.
     """
     session = init_db()()
     click.echo("\n****************************")
@@ -37,6 +38,7 @@ def main():
             return
         else:
             click.echo("Bye bye!")
+            sleep(1)
             sys.exit(0)
 
 
