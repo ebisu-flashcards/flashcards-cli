@@ -29,7 +29,7 @@ SRS algorithms have a noticeable impact on the short term learning rate, but the
 
 Here is an example of how to create a deck, a couple of cards, and how to study them.
 
-!(video example of a study session)[images/study-session.gif]
+![video example of a study session](images/study-session.gif)
 
 Note that for the time being, only a small subset of the features of `flashcards-core` is used: for example there is no way to add tags to any entity, to add context to question and answers, to use any SRS algorithm except for `random`, and no way to configure the algorithm parameters either. On the other end, this application is extremely small, so feel free to peek into the code and send a patch with the features you wish to add. Or at least open an issues for other volunteer to be aware of your interest.
 
