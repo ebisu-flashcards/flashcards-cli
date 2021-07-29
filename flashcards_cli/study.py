@@ -3,12 +3,12 @@ from PyInquirer import prompt
 from sqlalchemy.orm import Session
 
 from flashcards_core.schedulers import get_scheduler_for_deck
-from flashcards_core.database.decks import Deck
+from flashcards_core.database import Deck
 
 
-def study(db: Session):
+def study(session: Session):
 
-    decks = Deck.get_all(db=db)
+    decks = Deck.get_all(session=session)
     if not decks:
         click.echo('You have no decks! Use "Edit my collection" to create one.')
         return
@@ -28,8 +28,8 @@ def study(db: Session):
     if not answers.get("deck") or answers["deck"] == "< Back":
         return
 
-    deck = Deck.get_by_name(db=db, name=answers["deck"])
-    scheduler = get_scheduler_for_deck(db=db, deck=deck)
+    deck = Deck.get_by_name(session=session, name=answers["deck"])
+    scheduler = get_scheduler_for_deck(session=session, deck=deck)
 
     reviewed_cards = 0
     while True:

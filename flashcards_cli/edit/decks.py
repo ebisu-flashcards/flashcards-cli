@@ -4,18 +4,18 @@ import click
 from PyInquirer import prompt
 from sqlalchemy.orm import Session
 
-from flashcards_core.database.decks import Deck
+from flashcards_core.database import Deck
 from flashcards_core.schedulers import get_available_schedulers
 
 from flashcards_cli.edit.cards import edit_cards
 
 
-def edit_decks(db: Session):
+def edit_decks(session: Session):
     """
     Prompt for the Edit Collection menu.
     Lets the user select the deck they want to edit, or add new ones.
 
-    :param db: a SQLAlchemy Session object
+    :param session: a SQLAlchemy Session object
     """
     answers = prompt(
         [
@@ -23,7 +23,7 @@ def edit_decks(db: Session):
                 "type": "list",
                 "name": "deck",
                 "message": "Which deck do you want to edit?",
-                "choices": [d.name for d in Deck.get_all(db=db)]
+                "choices": [d.name for d in Deck.get_all(session=session)]
                 + ["+ Create new deck", "< Back"],
             }
         ]
@@ -35,15 +35,15 @@ def edit_decks(db: Session):
 
     deck: Deck
     if answers["deck"] == "+ Create new deck":
-        deck = create_deck(db)
+        deck = create_deck(session)
     elif answers["deck"] == "< Back":
         return
     else:
-        deck = Deck.get_by_name(db=db, name=answers["deck"])
+        deck = Deck.get_by_name(session=session, name=answers["deck"])
 
     # Happens in case of Ctrl+C during any of the sub-operations (creation, update...)
     if not deck:
-        edit_decks(db)
+        edit_decks(session)
         return
 
     answers = prompt(
@@ -63,24 +63,24 @@ def edit_decks(db: Session):
     )
 
     if answers["operation"] == "Update deck details":
-        deck = update_deck(db, deck)
+        deck = update_deck(session, deck)
 
     elif answers["operation"] == "Delete deck":
-        delete_deck(db, deck)
+        delete_deck(session, deck)
 
     elif answers["operation"] == "Edit cards":
-        edit_cards(db, deck)
+        edit_cards(session, deck)
 
     elif answers["operation"] == "< Back":
-        edit_decks(db)
+        edit_decks(session)
 
 
-def create_deck(db: Session) -> Optional[Deck]:
+def create_deck(session: Session) -> Optional[Deck]:
     """
     Created a new deck with the information gathered,
-    and gives some feedback to the user.
+    and gives some feesessionack to the user.
 
-    :param db: a SQLAlchemy Session object
+    :param session: a SQLAlchemy Session object
     """
     answers = prompt(
         [
@@ -111,7 +111,7 @@ def create_deck(db: Session) -> Optional[Deck]:
         return
 
     deck = Deck.create(
-        db=db,
+        session=session,
         name=answers["name"],
         description=answers["desc"],
         algorithm=answers["algorithm"],
@@ -122,12 +122,12 @@ def create_deck(db: Session) -> Optional[Deck]:
     return deck
 
 
-def update_deck(db: Session, deck: Deck) -> Optional[Deck]:
+def update_deck(session: Session, deck: Deck) -> Optional[Deck]:
     """
     Updates the given deck with the information gathered,
-    and gives some feedback to the user.
+    and gives some feesessionack to the user.
 
-    :param db: a SQLAlchemy Session object
+    :param session: a SQLAlchemy Session object
     :param deck: the Deck model object to update
     """
     answers = prompt(
@@ -170,7 +170,7 @@ def update_deck(db: Session, deck: Deck) -> Optional[Deck]:
         return
 
     deck = Deck.update(
-        db=db,
+        session=session,
         object_id=deck.id,
         name=answers["name"],
         description=answers["description"],
@@ -182,11 +182,11 @@ def update_deck(db: Session, deck: Deck) -> Optional[Deck]:
     return deck
 
 
-def delete_deck(db: Session, deck: Deck) -> None:
+def delete_deck(session: Session, deck: Deck) -> None:
     """
-    Deletes the given deck and gives some feedback to the user.
+    Deletes the given deck and gives some feesessionack to the user.
 
-    :param db: a SQLAlchemy Session object
+    :param session: a SQLAlchemy Session object
     :param deck: the Deck model object to delete
     """
     answers = prompt(
@@ -201,7 +201,7 @@ def delete_deck(db: Session, deck: Deck) -> None:
         ]
     )
     if answers["confirm"]:
-        Deck.delete(db=db, object_id=deck.id)
+        Deck.delete(session=session, object_id=deck.id)
         click.echo("Deck deleted!")
     else:
         click.echo("The deck was NOT deleted.")

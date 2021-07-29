@@ -1,4 +1,4 @@
-def test_stub(session, temp_db):
+def test_stub(session):
     """
     FIXME this is a stub!
     """

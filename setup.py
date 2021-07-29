@@ -1,73 +1,16 @@
-"""
-setup.py for flashcards-cli.
+#!/usr/bin/env python
 
-For reference see
-https://packaging.python.org/guides/distributing-packages-using-setuptools/
+# This file enables editable installs (pip install -e .[dev])
 
-"""
-from pathlib import Path
-from setuptools import setup, find_packages
+import setuptools
 
+# ##########################################################
+#  See this issue: https://github.com/pypa/pip/issues/7953
+import site
+import sys
 
-HERE = Path(__file__).parent.absolute()
-with (HERE / "README.md").open("rt") as fh:
-    LONG_DESCRIPTION = fh.read().strip()
+site.ENABLE_USER_SITE = "--user" in sys.argv[1:]
+# ##########################################################
 
-
-REQUIREMENTS: dict = {
-    "core": [
-        "flashcards-core",
-        "prompt_toolkit",
-        "click",
-        "fuzzyfinder",
-        "sqlalchemy"   # FIXME Here for typing only... is it worth it?
-    ],
-    "test": [
-        "pytest",
-        "pytest-cov",
-        "pytest-random-order",
-        "pre-commit",
-        "black",
-        "flake8",
-        "coveralls",  # To publish the coverage data on coveralls
-    ],
-    "doc": [
-        "sphinx",
-    ],
-}
-
-
-setup(
-    name="flashcards-cli",
-    version="0.0.1",
-    author="Sara Zanzottera",
-    author_email="",
-    description="Flashcards Core",
-    long_description=LONG_DESCRIPTION,
-    long_description_content_type="text/markdown",
-    url="",
-    packages=find_packages(),
-    python_requires=">=3.6, <4",
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "Operating System :: OS Independent",
-    ],
-    install_requires=REQUIREMENTS["core"],
-    extras_require={
-        **REQUIREMENTS,
-        # The 'dev' extra is the union of 'test' and 'doc', with an option
-        # to have explicit development dependencies listed.
-        "dev": [
-            req
-            for extra in ["dev", "test", "doc"]
-            for req in REQUIREMENTS.get(extra, [])
-        ],
-        # The 'all' extra is the union of all requirements.
-        "all": [req for reqs in REQUIREMENTS.values() for req in reqs],
-    },
-    entry_points={
-        'console_scripts': {
-            "flashcards=flashcards_cli.main:main"
-        }
-    }
-)
+if __name__ == "__main__":
+    setuptools.setup()
